@@ -2,4 +2,5 @@
     <string name="app_name">To-Do List</string>
     <string name="checklist_icon_desc">checklist icon</string>
     <string name="add_your_task_label_textField">Add your task</string>
+    <string name="close_icon_desc">close icon</string>
 </resources>
