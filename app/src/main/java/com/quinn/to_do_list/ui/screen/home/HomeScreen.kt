@@ -1,5 +1,6 @@
 package com.quinn.to_do_list.ui.screen.home
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -26,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,53 +34,63 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.quinn.to_do_list.R
+import com.quinn.to_do_list.addTaskFile
+import com.quinn.to_do_list.data.model.TaskNode
+import com.quinn.to_do_list.removeTask
 
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-
-    var selected by remember{ mutableStateOf(false) }
+fun HomeScreen(
+    homeViewModel: HomeViewModel = viewModel(),
+) {
+    val context = LocalContext.current
+    homeViewModel.refresh(context)
 
     Scaffold(
         modifier = Modifier
+            .fillMaxSize()
             .statusBarsPadding()
             .padding(15.dp),
         topBar = {
             Column(
-                modifier = modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 AppNameBar()
-                AddTaskBar()
+                AddTaskBar(
+                    homeViewModel = homeViewModel,
+                    context = context
+                )
             }
         }
     ) { innerPadding ->
         HomeScreenBody(
-            onSelect = { select ->
-                selected = select
-            },
-            selected = selected,
+            context = context,
+            taskList = homeViewModel.taskList,
             Modifier.padding(innerPadding))
     }
 }
 
 @Composable
 fun HomeScreenBody(
-    onSelect: (Boolean) -> Unit,
-    selected: Boolean,
-    modifier: Modifier = Modifier) {
+    context: Context,
+    taskList: List<TaskNode>,
+    modifier: Modifier = Modifier
+) {
     Column (
         modifier = modifier
             .background(Color(0xFFFFFAFA))
             .fillMaxSize()
     ) {
         TaskSection(
-            onSelect = onSelect,
-            selected = selected
+            context = context,
+            taskList = taskList,
         )
     }
 }
@@ -94,11 +102,11 @@ fun AppNameBar(modifier: Modifier = Modifier) {
         modifier = modifier.padding(vertical = 15.dp)
     ) {
         Text(
-            text = "To - Do ",
+            text = stringResource(R.string.to_do_txt_title),
             style = MaterialTheme.typography.displaySmall
         )
         Text(
-            text = "List",
+            text = stringResource(R.string.list_txt_title),
             style = MaterialTheme.typography.displaySmall,
             color = Color(0xFF845EC2)
         )
@@ -112,7 +120,14 @@ fun AppNameBar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AddTaskBar(modifier: Modifier = Modifier) {
+fun AddTaskBar(
+    homeViewModel: HomeViewModel,
+    context: Context,
+    modifier: Modifier = Modifier
+) {
+
+    var taskName by remember { mutableStateOf("") }
+
     Surface(
         shape = RoundedCornerShape(100.dp),
         modifier = Modifier.padding(vertical = 15.dp)
@@ -135,7 +150,7 @@ fun AddTaskBar(modifier: Modifier = Modifier) {
                     )
                 },
                 singleLine = true,
-                onValueChange = {},
+                onValueChange = { taskName = it },
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
@@ -150,7 +165,13 @@ fun AddTaskBar(modifier: Modifier = Modifier) {
             )
             Button(
                 modifier = modifier.weight(3f),
-                onClick = {},
+                onClick = {
+                    addTaskFile(
+                        context = context,
+                        taskName = taskName
+                    )
+                    homeViewModel.refresh(context)
+                },
                 colors = buttonColors(
                     contentColor = Color(0xFF845EC2),
                     containerColor = Color(0xFF845EC2),
@@ -158,7 +179,7 @@ fun AddTaskBar(modifier: Modifier = Modifier) {
                 contentPadding = PaddingValues(25.dp, 20.dp)
             ) {
                 Text(
-                    text = "Add",
+                    text = stringResource(R.string.add_txt_btn),
                     color = Color(0xFFFFD3D3),
                     style = MaterialTheme.typography.labelLarge
                 )
@@ -169,43 +190,53 @@ fun AddTaskBar(modifier: Modifier = Modifier) {
 
 @Composable
 fun TaskSection(
-    onSelect: (Boolean) -> Unit,
-    selected: Boolean,
+    context: Context,
+    taskList: List<TaskNode>,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .padding(vertical = 30.dp)
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TaskTab(
-            onSelect = onSelect,
-            selected = selected
-        )
-        TaskTab(
-            onSelect = onSelect,
-            selected = selected
-        )
-
-        TaskTab(
-            onSelect = onSelect,
-            selected = selected
-        )
-
-        TaskTab(
-            onSelect = onSelect,
-            selected = selected
-        )
-
+        if (taskList.size > 1) {
+            taskList.forEach { task ->
+                TaskTab(
+                    task = task,
+                    context = context
+                    )
+            }
+        } else {
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.you_don_t_have_any_to_do_yet_homesc_txt),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Black
+                )
+                Spacer(Modifier.width(15.dp))
+                Image(
+                    painter = painterResource(R.drawable.confetti_icon),
+                    contentDescription = "confetti icon",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
     }
 }
 
 @Composable
 fun TaskTab(
-    selected: Boolean,
-    onSelect: (Boolean) -> Unit,
+    context: Context,
+    task: TaskNode,
     modifier: Modifier = Modifier
 ) {
+    var selected by remember{ mutableStateOf(false) }
+
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
@@ -217,7 +248,7 @@ fun TaskTab(
         RadioButton(
             modifier = Modifier.weight(1.5f),
             selected = selected,
-            onClick = { onSelect(!selected) },
+            onClick = { selected = !selected },
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color.Green,
                 unselectedColor = Color.White
@@ -225,13 +256,18 @@ fun TaskTab(
         )
         Text(
             modifier = Modifier.weight(7f),
-            text = "Sample Task Lorem ",
+            text = task.taskName,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White
         )
         Button(
             modifier = Modifier.weight(1.5f),
-            onClick = {},
+            onClick = {
+                removeTask(
+                    context = context,
+                    task.id
+                )
+            },
             colors = buttonColors(
                 contentColor = Color.Transparent,
                 containerColor = Color.Transparent

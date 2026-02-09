@@ -3,4 +3,8 @@
     <string name="checklist_icon_desc">checklist icon</string>
     <string name="add_your_task_label_textField">Add your task</string>
     <string name="close_icon_desc">close icon</string>
+    <string name="to_do_txt_title">"To - Do "</string>
+    <string name="list_txt_title">List</string>
+    <string name="you_don_t_have_any_to_do_yet_homesc_txt">You don\'t have any to-do yet!</string>
+    <string name="add_txt_btn">Add</string>
 </resources>
