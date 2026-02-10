@@ -41,9 +41,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.quinn.to_do_list.R
-import com.quinn.to_do_list.addTaskFile
+import com.quinn.to_do_list.functions.addTaskFile
 import com.quinn.to_do_list.data.model.TaskNode
-import com.quinn.to_do_list.removeTask
+import com.quinn.to_do_list.functions.removeTask
 
 
 @Composable
@@ -55,12 +55,14 @@ fun HomeScreen(
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
             .statusBarsPadding()
-            .padding(15.dp),
+            .background(Color(0xFFFFFAFA))
+            .fillMaxSize(),
         topBar = {
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .background(Color(0xFFFFFAFA))
+                    .fillMaxWidth()
             ) {
                 AppNameBar()
                 AddTaskBar(
@@ -71,6 +73,7 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         HomeScreenBody(
+            homeViewModel = homeViewModel,
             context = context,
             taskList = homeViewModel.taskList,
             Modifier.padding(innerPadding))
@@ -79,6 +82,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreenBody(
+    homeViewModel: HomeViewModel,
     context: Context,
     taskList: List<TaskNode>,
     modifier: Modifier = Modifier
@@ -86,9 +90,11 @@ fun HomeScreenBody(
     Column (
         modifier = modifier
             .background(Color(0xFFFFFAFA))
+            .padding(horizontal = 15.dp)
             .fillMaxSize()
     ) {
         TaskSection(
+            homeViewModel = homeViewModel,
             context = context,
             taskList = taskList,
         )
@@ -99,11 +105,12 @@ fun HomeScreenBody(
 fun AppNameBar(modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(vertical = 15.dp)
+        modifier = modifier.padding(15.dp)
     ) {
         Text(
             text = stringResource(R.string.to_do_txt_title),
-            style = MaterialTheme.typography.displaySmall
+            style = MaterialTheme.typography.displaySmall,
+            color = Color.Black
         )
         Text(
             text = stringResource(R.string.list_txt_title),
@@ -129,8 +136,9 @@ fun AddTaskBar(
     var taskName by remember { mutableStateOf("") }
 
     Surface(
+
         shape = RoundedCornerShape(100.dp),
-        modifier = Modifier.padding(vertical = 15.dp)
+        modifier = Modifier.padding(15.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -141,8 +149,8 @@ fun AddTaskBar(
         ) {
             TextField(
                 modifier = modifier.weight(7f),
-                value = "",
-                label = {
+                value = taskName,
+                placeholder = {
                     Text(
                         text = stringResource(R.string.add_your_task_label_textField),
                         color = Color.Black,
@@ -190,6 +198,7 @@ fun AddTaskBar(
 
 @Composable
 fun TaskSection(
+    homeViewModel: HomeViewModel,
     context: Context,
     taskList: List<TaskNode>,
     modifier: Modifier = Modifier
@@ -204,6 +213,7 @@ fun TaskSection(
         if (taskList.size > 1) {
             taskList.forEach { task ->
                 TaskTab(
+                    homeViewModel = homeViewModel,
                     task = task,
                     context = context
                     )
@@ -231,6 +241,7 @@ fun TaskSection(
 
 @Composable
 fun TaskTab(
+    homeViewModel: HomeViewModel,
     context: Context,
     task: TaskNode,
     modifier: Modifier = Modifier
@@ -267,6 +278,7 @@ fun TaskTab(
                     context = context,
                     task.id
                 )
+                homeViewModel.refresh(context)
             },
             colors = buttonColors(
                 contentColor = Color.Transparent,

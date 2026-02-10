@@ -1,4 +1,4 @@
-package com.quinn.to_do_list
+package com.quinn.to_do_list.functions
 
 import android.content.Context
 import org.json.JSONArray

@@ -1,6 +1,7 @@
 package com.quinn.to_do_list.ui.screen.home
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.quinn.to_do_list.data.model.TaskNode
@@ -29,7 +30,16 @@ class HomeViewModel : ViewModel() {
 
         if (fileJson.length() > 1) {
             val fileList = mutableListOf<TaskNode>() // holds the list of tasks found in file
-            for (task in (fileJson.length()-1) downTo 1) {
+            for (task in 1 ..(fileJson.length()-1)) {
+                try {
+                    val taskNode: TaskNode = Json.decodeFromString<TaskNode>(fileJson.getString(task))  // Attempt to decode
+                    // Use taskNode object
+                } catch (e: Exception) {
+                    // Log the exception to see what's going wrong
+                    Log.e("DeserializationError", "Failed to decode JSON: ${e.localizedMessage}")
+                    e.printStackTrace()
+                }
+                Log.d("HEYIMLOL", fileJson.getString(task))
                 fileList.add(
                     Json.decodeFromString<TaskNode>(fileJson.getString(task)) // Load the content
                 )

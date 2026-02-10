@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TaskNode (
-    val id: String,
-    val taskName: String
+    val taskName: String,
+    val id: String
 )
