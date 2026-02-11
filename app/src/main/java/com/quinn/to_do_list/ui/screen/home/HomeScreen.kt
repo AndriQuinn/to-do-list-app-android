@@ -1,6 +1,8 @@
 package com.quinn.to_do_list.ui.screen.home
 
 import android.content.Context
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,11 +12,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
@@ -27,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,13 +44,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.quinn.to_do_list.R
-import com.quinn.to_do_list.functions.addTaskFile
 import com.quinn.to_do_list.data.model.TaskNode
+import com.quinn.to_do_list.functions.addTaskFile
 import com.quinn.to_do_list.functions.removeTask
-
+import com.quinn.to_do_list.functions.updateDone
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -92,6 +100,7 @@ fun HomeScreenBody(
             .background(Color(0xFFFFFAFA))
             .padding(horizontal = 15.dp)
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         TaskSection(
             homeViewModel = homeViewModel,
@@ -179,6 +188,7 @@ fun AddTaskBar(
                         taskName = taskName
                     )
                     homeViewModel.refresh(context)
+                    taskName = ""
                 },
                 colors = buttonColors(
                     contentColor = Color(0xFF845EC2),
@@ -210,9 +220,10 @@ fun TaskSection(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (taskList.size > 1) {
-            taskList.forEach { task ->
+        if (taskList.isNotEmpty()) {
+            taskList.forEachIndexed { index, task ->
                 TaskTab(
+                    delay = (index * 50L),
                     homeViewModel = homeViewModel,
                     task = task,
                     context = context
@@ -241,25 +252,47 @@ fun TaskSection(
 
 @Composable
 fun TaskTab(
+    delay: Long,
     homeViewModel: HomeViewModel,
     context: Context,
     task: TaskNode,
     modifier: Modifier = Modifier
 ) {
-    var selected by remember{ mutableStateOf(false) }
+    var isDone by remember { mutableStateOf(task.done.toBoolean())}
+    var fadeIn by remember {mutableStateOf(false)}
+    val offsetX by animateDpAsState(
+        targetValue = if (fadeIn) 0.dp else -(500.dp),
+        animationSpec = tween(durationMillis = 400),
+        label = "fade in"
+    )
+
+    LaunchedEffect(Unit) {
+        delay(delay)
+        fadeIn = true
+    }
 
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
+            .offset {
+                IntOffset(offsetX.roundToPx(), 0)
+            }
             .padding(vertical = 10.dp)
             .background(Color(0xFF845EC2))
             .fillMaxWidth()
     ) {
         RadioButton(
             modifier = Modifier.weight(1.5f),
-            selected = selected,
-            onClick = { selected = !selected },
+            selected = isDone,
+            onClick = {
+                task.setDone()
+                isDone = task.done.toBoolean()
+                updateDone(
+                    context = context,
+                    targetTask = task
+                )
+            },
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color.Green,
                 unselectedColor = Color.White
@@ -295,7 +328,6 @@ fun TaskTab(
         }
     }
 }
-
 
 @Preview (
     name = "Home Screen",
