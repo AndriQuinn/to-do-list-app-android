@@ -9,8 +9,13 @@ A very simple Android app to manage your daily tasks.
 
 ## Installation ⬇️
 
-1. Click the release
-2. Donwload the apk
-3. Done! 
+1. Release:
+   - Click the release
+   - Download the apk
+   - Done! 🥳
 
-
+2. Clone the repository
+  ```bash
+  git clone https://github.com/AndriQuinn/to-do-list-app-android.git
+  ```
+  Done! 🥳
