@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.quinn.to_do_list.ui.screen.home.HomeScreen
+import com.quinn.to_do_list.ui.screens.HomeScreen
 import com.quinn.to_do_list.ui.theme.ToDoListTheme
 
 class MainActivity : ComponentActivity() {

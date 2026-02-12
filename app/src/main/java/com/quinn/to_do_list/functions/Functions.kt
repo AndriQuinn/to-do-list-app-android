@@ -17,6 +17,7 @@ fun addTaskFile(context: Context, taskName: String) {
         file.put(lengthObj)
         filePath.writeText(file.toString())
     }
+
     val fileContent = JSONArray(filePath.readText()) // place the file content in the variable
     var length = fileContent.getJSONObject(0).getInt("length") // Get the value of length
     length++ // Iterate length
