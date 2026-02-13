@@ -1,5 +1,6 @@
 package com.quinn.to_do_list.ui.screens
 
+import AppDatabase
 import android.content.Context
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -33,6 +34,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,27 +49,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
+import com.quinn.to_do_list.MyApp
 import com.quinn.to_do_list.R
-import com.quinn.to_do_list.data.model.TaskNode
+import com.quinn.to_do_list.data.local.entity.Tasks
 import com.quinn.to_do_list.data.repository.TaskRepository
-import com.quinn.to_do_list.functions.addTaskFile
-import com.quinn.to_do_list.functions.removeTask
-import com.quinn.to_do_list.functions.updateDone
 import com.quinn.to_do_list.viewmodel.HomeViewModel
 import com.quinn.to_do_list.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
-//    homeViewModel: HomeViewModel = viewModel(),
+
 ) {
+
+    val application = LocalContext.current.applicationContext as MyApp
+
+    val homeViewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelFactory(application.repository)
+    )
     val context = LocalContext.current
-    val repository = remember { TaskRepository(context) }
-    val factory = remember { HomeViewModelFactory(repository) }
-
-    val homeViewModel: HomeViewModel = viewModel(factory = factory)
-
-    homeViewModel.refresh(context)
+    val tasks by homeViewModel.tasks.collectAsState(initial = emptyList())
 
     Scaffold(
         modifier = Modifier
@@ -91,7 +93,7 @@ fun HomeScreen(
         HomeScreenBody(
             homeViewModel = homeViewModel,
             context = context,
-            taskList = homeViewModel.taskList,
+            taskList = tasks,
             Modifier.padding(innerPadding))
     }
 }
@@ -100,7 +102,7 @@ fun HomeScreen(
 fun HomeScreenBody(
     homeViewModel: HomeViewModel,
     context: Context,
-    taskList: List<TaskNode>,
+    taskList: List<Tasks>,
     modifier: Modifier = Modifier
 ) {
     Column (
@@ -192,7 +194,6 @@ fun AddTaskBar(
                 modifier = modifier.weight(3f),
                 onClick = {
                     homeViewModel.addTask(taskName)
-                    homeViewModel.refresh(context)
                     taskName = ""
                 },
                 colors = buttonColors(
@@ -215,7 +216,7 @@ fun AddTaskBar(
 fun TaskSection(
     homeViewModel: HomeViewModel,
     context: Context,
-    taskList: List<TaskNode>,
+    taskList: List<Tasks>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -225,51 +226,6 @@ fun TaskSection(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-//
-//        TaskTab(
-//            task = TaskNode(
-//                taskName = "Do your projects",
-//                id = "1",
-//                done = "false"
-//            ),
-//            delay = 50L,
-//            homeViewModel = homeViewModel,
-//            context = context
-//        )
-//
-//        TaskTab(
-//            task = TaskNode(
-//                taskName = "Go to the groceries",
-//                id = "1",
-//                done = "false"
-//            ),
-//            delay = 50L,
-//            homeViewModel = homeViewModel,
-//            context = context
-//        )
-//
-//        TaskTab(
-//            task = TaskNode(
-//                taskName = "Do the dishes",
-//                id = "1",
-//                done = "false"
-//            ),
-//            delay = 50L,
-//            homeViewModel = homeViewModel,
-//            context = context
-//        )
-//
-//        TaskTab(
-//            task = TaskNode(
-//                taskName = "Do the laundry",
-//                id = "1",
-//                done = "false"
-//            ),
-//            delay = 50L,
-//            homeViewModel = homeViewModel,
-//            context = context
-//        )
-//    }
         if (taskList.isNotEmpty()) {
             Row (
                 verticalAlignment = Alignment.CenterVertically,
@@ -278,8 +234,7 @@ fun TaskSection(
             ) {
                 Button (
                     onClick = {
-                        homeViewModel.clearTask()
-                        homeViewModel.refresh(context)
+                        homeViewModel.removeAllTask()
                     },
                     colors = buttonColors(
                         containerColor = Color(0xFFED4845),
@@ -340,10 +295,10 @@ fun TaskTab(
     delay: Long,
     homeViewModel: HomeViewModel,
     context: Context,
-    task: TaskNode,
+    task: Tasks,
     modifier: Modifier = Modifier
 ) {
-    var isDone by remember { mutableStateOf(task.done.toBoolean())}
+    var isDone by remember { mutableStateOf(task.done)}
     var fadeIn by remember {mutableStateOf(false)}
     val offsetX by animateDpAsState(
         targetValue = if (fadeIn) 0.dp else -(500.dp),
@@ -371,9 +326,8 @@ fun TaskTab(
             modifier = Modifier.weight(1.5f),
             selected = isDone,
             onClick = {
-                task.setDone()
-                isDone = task.done.toBoolean()
                 homeViewModel.updateTask(task)
+
             },
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color.Green,
@@ -389,8 +343,7 @@ fun TaskTab(
         Button(
             modifier = Modifier.weight(1.5f),
             onClick = {
-                homeViewModel.deleteTask(task.id)
-                homeViewModel.refresh(context)
+                homeViewModel.removeTask(task)
             },
             colors = buttonColors(
                 contentColor = Color.Transparent,

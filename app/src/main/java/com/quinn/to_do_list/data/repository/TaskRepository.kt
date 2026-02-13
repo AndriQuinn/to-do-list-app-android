@@ -1,78 +1,21 @@
 package com.quinn.to_do_list.data.repository
 
-import android.content.Context
-import com.quinn.to_do_list.data.model.TaskNode
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.File
+import TasksDao
+import com.quinn.to_do_list.data.local.entity.Tasks
+import kotlinx.coroutines.flow.Flow
 
 class TaskRepository(
-    private val context: Context
+    private val dao: TasksDao
 ) {
-    private val fileName = "task-list.json"
-    private val filePath = File(context.filesDir, fileName) // Get the file path
+    suspend fun addTask(taskName: String) = dao.insert(tasks =Tasks(taskName = taskName, done = false))
 
-    fun addTaskFile(taskName: String) {
+    suspend fun removeTask(task: Tasks)  = dao.delete(tasks = task)
 
-        // Checks if the file exist in the path, if not create one
-        if (!filePath.exists()) {
-            val file = JSONArray()
-            val lengthObj = JSONObject().put("length","1") // Create a json object length for id's
-            file.put(lengthObj)
-            filePath.writeText(file.toString())
-        }
+    suspend fun updateTask(task: Tasks) = dao.updateTask(task)
 
-        val fileContent = JSONArray(filePath.readText()) // place the file content in the variable
-        var length = fileContent.getJSONObject(0).getInt("length") // Get the value of length
-        length++ // Iterate length
-        val taskObject = JSONObject() // Create json object to hold the task data e.g. title
-        taskObject.put("taskName", taskName)
-        taskObject.put("id", "$length") // Assign the id as the current length
-        taskObject.put("done", "false")
 
-        fileContent.put(taskObject) // put the task object to the json array
-        fileContent.getJSONObject(0).put("length","$length") // Update the length on the file
-        filePath.writeText(fileContent.toString()) // rewrite the file with the updated one
-    }
+    fun readAllTask(): Flow<List<Tasks>>  = dao.getAllTasks()
 
-    fun removeTask(id: String) {
-        val fileContent = JSONArray(filePath.readText())
+    suspend fun removeAllTask() = dao.deleteAllTasks()
 
-        for (i in fileContent.length() - 1 downTo 1) {
-            val task = fileContent.getJSONObject(i)
-            if (task.getInt("id") == id.toInt()) {
-                fileContent.remove(i)
-                break
-            }
-        }
-        filePath.writeText(fileContent.toString())
-    }
-
-    fun updateDone(targetTask: TaskNode) {
-        val fileContent = JSONArray(filePath.readText())
-
-        for (i in fileContent.length() - 1 downTo 1) {
-            val task = fileContent.getJSONObject(i)
-            if (task.getInt("id") == targetTask.id.toInt()) {
-                task.put("done",targetTask.done)
-                break
-            }
-        }
-        filePath.writeText(fileContent.toString())
-    }
-
-    fun readFile(): JSONArray {
-        // Check if the file exist
-        val fileJson = if (filePath.exists()) {
-            JSONArray(filePath.readText()) // Read the file as JSON array
-        } else {
-            JSONArray()
-        } // Return a empty JSON array
-
-        return fileJson
-    }
-
-    fun clearFile() {
-        filePath.writeText(JSONArray().toString())
-    }
 }
