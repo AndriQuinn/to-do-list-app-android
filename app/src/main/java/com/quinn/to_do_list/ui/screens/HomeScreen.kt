@@ -1,6 +1,5 @@
 package com.quinn.to_do_list.ui.screens
 
-import AppDatabase
 import android.content.Context
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -49,20 +48,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
 import com.quinn.to_do_list.MyApp
 import com.quinn.to_do_list.R
 import com.quinn.to_do_list.data.local.entity.Tasks
-import com.quinn.to_do_list.data.repository.TaskRepository
 import com.quinn.to_do_list.viewmodel.HomeViewModel
 import com.quinn.to_do_list.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.delay
 
 @Composable
-fun HomeScreen(
-
-) {
-
+fun HomeScreen() {
     val application = LocalContext.current.applicationContext as MyApp
 
     val homeViewModel: HomeViewModel = viewModel(
@@ -92,7 +86,6 @@ fun HomeScreen(
     ) { innerPadding ->
         HomeScreenBody(
             homeViewModel = homeViewModel,
-            context = context,
             taskList = tasks,
             Modifier.padding(innerPadding))
     }
@@ -101,7 +94,6 @@ fun HomeScreen(
 @Composable
 fun HomeScreenBody(
     homeViewModel: HomeViewModel,
-    context: Context,
     taskList: List<Tasks>,
     modifier: Modifier = Modifier
 ) {
@@ -114,7 +106,6 @@ fun HomeScreenBody(
     ) {
         TaskSection(
             homeViewModel = homeViewModel,
-            context = context,
             taskList = taskList,
         )
     }
@@ -215,7 +206,6 @@ fun AddTaskBar(
 @Composable
 fun TaskSection(
     homeViewModel: HomeViewModel,
-    context: Context,
     taskList: List<Tasks>,
     modifier: Modifier = Modifier
 ) {
@@ -266,7 +256,6 @@ fun TaskSection(
                     delay = (index * 50L),
                     homeViewModel = homeViewModel,
                     task = task,
-                    context = context
                     )
             }
         } else {
@@ -294,7 +283,6 @@ fun TaskSection(
 fun TaskTab(
     delay: Long,
     homeViewModel: HomeViewModel,
-    context: Context,
     task: Tasks,
     modifier: Modifier = Modifier
 ) {
