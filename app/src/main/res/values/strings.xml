@@ -7,4 +7,20 @@
     <string name="list_txt_title">List</string>
     <string name="you_don_t_have_any_to_do_yet_homesc_txt">You don\'t have any to-do yet!</string>
     <string name="add_txt_btn">Add</string>
+    <string name="icons_made_by_txt_attribution_text">"Icons made by "</string>
+    <string name="from_txt_attribution_text">" from "</string>
+    <string name="clear_text_btn_label">Clear</string>
+    <string name="delete_icon_txt_desc">delete icon</string>
+    <string name="confetti_icon_desc">confetti icon</string>
+    <string name="ilham_fitrotul_hayat">Ilham Fitrotul Hayat</string>
+    <string name="ilham_fitrotul_hayat_author_link">https://www.flaticon.com/authors/ilham-fitrotul-hayat</string>
+    <string name="flaticon_source">Flaticon</string>
+    <string name="flaticon_source_link">https://www.flaticon.com</string>
+    <string name="freepik_author_link">https://www.flaticon.com/authors/freepik</string>
+    <string name="freepik_author">Freepik</string>
+    <string name="info_icon_desc">info icon</string>
+    <string name="graphics_plazza_author">Graphics Plazza</string>
+    <string name="graphics_plazza_author_link">https://www.flaticon.com/authors/graphics-plazza</string>
+    <string name="attribution_header_txt">Attribution</string>
+    <string name="this_app_uses_free_icons_header_txt2">This app uses free icons:</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.quinn.to_do_list.ui.screens
 
-import android.content.Context
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -44,25 +43,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.quinn.to_do_list.MyApp
 import com.quinn.to_do_list.R
 import com.quinn.to_do_list.data.local.entity.Tasks
+import com.quinn.to_do_list.ui.components.GenericButton
+import com.quinn.to_do_list.ui.components.NavBar
 import com.quinn.to_do_list.viewmodel.HomeViewModel
 import com.quinn.to_do_list.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.delay
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navController: NavController
+) {
     val application = LocalContext.current.applicationContext as MyApp
 
     val homeViewModel: HomeViewModel = viewModel(
         factory = HomeViewModelFactory(application.repository)
     )
-    val context = LocalContext.current
     val tasks by homeViewModel.tasks.collectAsState(initial = emptyList())
 
     Scaffold(
@@ -76,10 +78,26 @@ fun HomeScreen() {
                     .background(Color(0xFFFFFAFA))
                     .fillMaxWidth()
             ) {
-                AppNameBar()
+                NavBar(
+                    arrangement = Arrangement.SpaceBetween,
+                    elements = listOf(
+                        {AppNameBar()},
+                        {
+                            GenericButton(
+                                clickFunction = { navController.navigate("attribution") },
+                                content = {
+                                    Image(
+                                        painter = painterResource(R.drawable.info_icon),
+                                        contentDescription = stringResource(R.string.info_icon_desc),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            )
+                        }
+                    )
+                )
                 AddTaskBar(
                     homeViewModel = homeViewModel,
-                    context = context
                 )
             }
         }
@@ -139,7 +157,6 @@ fun AppNameBar(modifier: Modifier = Modifier) {
 @Composable
 fun AddTaskBar(
     homeViewModel: HomeViewModel,
-    context: Context,
     modifier: Modifier = Modifier
 ) {
 
@@ -207,7 +224,6 @@ fun AddTaskBar(
 fun TaskSection(
     homeViewModel: HomeViewModel,
     taskList: List<Tasks>,
-    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier
@@ -237,7 +253,7 @@ fun TaskSection(
 
                     ) {
                         Text(
-                            text = "Clear",
+                            text = stringResource(R.string.clear_text_btn_label),
                             color = Color.White,
                             style = MaterialTheme.typography.labelMedium
                         )
@@ -245,7 +261,7 @@ fun TaskSection(
                         Icon (
                             painter = painterResource(R.drawable.delete_icon),
                             tint = Color.White,
-                            contentDescription = "delete icon",
+                            contentDescription = stringResource(R.string.delete_icon_txt_desc),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -271,7 +287,7 @@ fun TaskSection(
                 Spacer(Modifier.width(15.dp))
                 Image(
                     painter = painterResource(R.drawable.confetti_icon),
-                    contentDescription = "confetti icon",
+                    contentDescription = stringResource(R.string.confetti_icon_desc),
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -284,7 +300,6 @@ fun TaskTab(
     delay: Long,
     homeViewModel: HomeViewModel,
     task: Tasks,
-    modifier: Modifier = Modifier
 ) {
     var isDone by remember { mutableStateOf(task.done)}
     var fadeIn by remember {mutableStateOf(false)}
@@ -347,14 +362,4 @@ fun TaskTab(
             )
         }
     }
-}
-
-@Preview (
-    name = "Home Screen",
-    showBackground = true,
-    showSystemUi = true
-)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
 }

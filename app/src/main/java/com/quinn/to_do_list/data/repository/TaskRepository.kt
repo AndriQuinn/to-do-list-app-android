@@ -1,6 +1,6 @@
 package com.quinn.to_do_list.data.repository
 
-import TasksDao
+import com.quinn.to_do_list.data.local.dao.TasksDao
 import com.quinn.to_do_list.data.local.entity.Tasks
 import kotlinx.coroutines.flow.Flow
 

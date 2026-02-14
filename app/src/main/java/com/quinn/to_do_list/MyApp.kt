@@ -1,8 +1,8 @@
 package com.quinn.to_do_list
 
-import AppDatabase
 import android.app.Application
 import androidx.room.Room
+import com.quinn.to_do_list.data.local.database.AppDatabase
 import com.quinn.to_do_list.data.repository.TaskRepository
 
 class MyApp : Application() {
