@@ -1,4 +1,4 @@
-# To - Do List App 📱
+# To - Do List App 📱 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 A very simple Android app to manage your daily tasks.
 
 ## Features 🚀
@@ -9,6 +9,12 @@ A very simple Android app to manage your daily tasks.
 
 ## Installation ⬇️
 
+Information:
+   Minimum Sdk = 24
+   Target Sdk = 36
+   Version = 1.0
+   App Size = 12MB
+
 1. Release:
    - Click the release
    - Download the apk
@@ -18,7 +24,10 @@ A very simple Android app to manage your daily tasks.
   ```bash
   git clone https://github.com/AndriQuinn/to-do-list-app-android.git
   ```
-  Done! 🥳
+   - Open in Android Studio
+   - Sync Gradle
+   - Run on device or emulator
+   - Done! 🥳
 
 ## License
 
@@ -33,3 +42,4 @@ This project uses icons from [Flaticon](https://www.flaticon.com):
 - Icons made by [Graphics Plazza](https://www.flaticon.com/authors/graphics-plazza)
 
 Licensed according to [Flaticon Terms](https://www.flaticon.com/license).
+
