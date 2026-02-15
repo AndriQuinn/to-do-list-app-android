@@ -20,6 +20,10 @@ A very simple Android app to manage your daily tasks.
   ```
   Done! 🥳
 
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details
+
 ## Third-Party Icons
 
 This project uses icons from [Flaticon](https://www.flaticon.com):
