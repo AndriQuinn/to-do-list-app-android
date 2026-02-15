@@ -23,4 +23,7 @@
     <string name="graphics_plazza_author_link">https://www.flaticon.com/authors/graphics-plazza</string>
     <string name="attribution_header_txt">Attribution</string>
     <string name="this_app_uses_free_icons_header_txt2">This app uses free icons:</string>
+    <string name="confirm_label_dialog">Confirm</string>
+    <string name="cancel_label_dialog">Cancel</string>
+    <string name="untitled_task_filler_txt">Untitled Task</string>
 </resources>

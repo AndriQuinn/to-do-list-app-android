@@ -19,6 +19,7 @@ class HomeViewModel(
     }
 
     fun removeTask(task: Tasks) {
+        task.done = !task.done
         viewModelScope.launch {
             repository.removeTask(task)
         }

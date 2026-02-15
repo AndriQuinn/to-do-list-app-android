@@ -50,6 +50,7 @@ import androidx.navigation.NavController
 import com.quinn.to_do_list.MyApp
 import com.quinn.to_do_list.R
 import com.quinn.to_do_list.data.local.entity.Tasks
+import com.quinn.to_do_list.ui.components.ConfirmDialog
 import com.quinn.to_do_list.ui.components.GenericButton
 import com.quinn.to_do_list.ui.components.NavBar
 import com.quinn.to_do_list.viewmodel.HomeViewModel
@@ -159,11 +160,9 @@ fun AddTaskBar(
     homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier
 ) {
-
     var taskName by remember { mutableStateOf("") }
 
     Surface(
-
         shape = RoundedCornerShape(100.dp),
         modifier = Modifier.padding(15.dp)
     ) {
@@ -182,8 +181,7 @@ fun AddTaskBar(
                         text = stringResource(R.string.add_your_task_label_textField),
                         color = Color.Black,
                         style = MaterialTheme.typography.labelLarge
-                    )
-                },
+                ) },
                 singleLine = true,
                 onValueChange = { taskName = it },
                 colors = TextFieldDefaults.colors(
@@ -193,14 +191,16 @@ fun AddTaskBar(
                     unfocusedContainerColor = Color(0xFFD3D3D3),
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-
                 ),
-                shape = RoundedCornerShape(40.dp)
+                    shape = RoundedCornerShape(40.dp)
 
             )
             Button(
                 modifier = modifier.weight(3f),
                 onClick = {
+                    if (taskName.isEmpty()) {
+                        taskName = "Untitled Task"
+                    }
                     homeViewModel.addTask(taskName)
                     taskName = ""
                 },
@@ -225,6 +225,21 @@ fun TaskSection(
     homeViewModel: HomeViewModel,
     taskList: List<Tasks>,
 ) {
+
+    var showDialog by remember {mutableStateOf(false)}
+
+    if (showDialog) {
+        ConfirmDialog(
+            title = "Clear To - Dos?",
+            message = "Are you sure you want to clear your To - Dos?",
+            onConfirm = {
+                homeViewModel.removeAllTask()
+                showDialog = !showDialog
+            },
+            onCancel = { showDialog = !showDialog }
+        )
+    }
+
     Column(
         modifier = Modifier
             .padding(vertical = 30.dp)
@@ -240,7 +255,7 @@ fun TaskSection(
             ) {
                 Button (
                     onClick = {
-                        homeViewModel.removeAllTask()
+                        showDialog = !showDialog
                     },
                     colors = buttonColors(
                         containerColor = Color(0xFFED4845),
@@ -330,7 +345,6 @@ fun TaskTab(
             selected = isDone,
             onClick = {
                 homeViewModel.updateTask(task)
-
             },
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color.Green,

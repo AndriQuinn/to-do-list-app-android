@@ -73,6 +73,11 @@ fun AttributionBody(modifier: Modifier = Modifier) {
         Card(
             element = listOf(
                 { Image(
+                    painter = painterResource(R.drawable.confetti_icon),
+                    contentDescription = stringResource(R.string.confetti_icon_desc),
+                    modifier = Modifier.size(30.dp)
+                ) },
+                { Image(
                     painter = painterResource(R.drawable.checklist),
                     contentDescription = stringResource(R.string.checklist_icon_desc),
                     modifier = Modifier.size(30.dp)
