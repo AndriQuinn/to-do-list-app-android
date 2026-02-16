@@ -23,9 +23,9 @@ Information:
    - Done! 🥳
 
 2. Clone the repository:
-   ```bash
-  git clone https://github.com/AndriQuinn/to-do-list-app-android.git
-     ```
+      ```bash
+        git clone https://github.com/AndriQuinn/to-do-list-app-android.git
+      ```
    - Open in Android Studio
    - Sync Gradle
    - Run on device or emulator
