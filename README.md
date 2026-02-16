@@ -22,10 +22,10 @@ Information:
    - Download the apk
    - Done! 🥳
 
-2. Clone the repository
-  ```bash
+2. Clone the repository:
+   ```bash
   git clone https://github.com/AndriQuinn/to-do-list-app-android.git
-  ```
+     ```
    - Open in Android Studio
    - Sync Gradle
    - Run on device or emulator
@@ -42,6 +42,4 @@ This project uses icons from [Flaticon](https://www.flaticon.com):
 - Icons made by [Freepik](https://www.flaticon.com/authors/freepik)
 - Icons made by [Ilham Fitrotul Hayat](https://www.flaticon.com/authors/ilham-fitrotul-hayat)
 - Icons made by [Graphics Plazza](https://www.flaticon.com/authors/graphics-plazza)
-
-
 
