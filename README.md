@@ -1,6 +1,8 @@
 # To - Do List App 📱 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 A very simple Android app to manage your daily tasks.
 
+<img src="https://drive.google.com/file/d/1-jKxY1Z8famGUeeVI7_uWx-RyF_Ef4Mx/view?usp=drive_link" width="100%" alt="Banner">
+
 ## Features 🚀
 - Simple and Clean UI
 - Add and Delete To - Do's
@@ -41,5 +43,5 @@ This project uses icons from [Flaticon](https://www.flaticon.com):
 - Icons made by [Ilham Fitrotul Hayat](https://www.flaticon.com/authors/ilham-fitrotul-hayat)
 - Icons made by [Graphics Plazza](https://www.flaticon.com/authors/graphics-plazza)
 
-Licensed according to [Flaticon Terms](https://www.flaticon.com/license).
+
 
