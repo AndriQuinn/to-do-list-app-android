@@ -1,7 +1,7 @@
 # To - Do List App 📱 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 A very simple Android app to manage your daily tasks.
 
-<img src="https://drive.google.com/file/d/1-jKxY1Z8famGUeeVI7_uWx-RyF_Ef4Mx/view?usp=drive_link" width="100%" alt="Banner">
+<img src="https://github.com/AndriQuinn/to-do-list-app-android/blob/main/assets/To%20-%20Do%20List%20Banner.png?raw=true" width="100%" alt="Banner">
 
 ## Features 🚀
 - Simple and Clean UI
