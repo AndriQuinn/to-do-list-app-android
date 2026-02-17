@@ -12,10 +12,10 @@ A very simple Android app to manage your daily tasks.
 ## Installation ⬇️
 
 Information:
-   Minimum Sdk = 24
-   Target Sdk = 36
-   Version = 1.0
-   App Size = 12MB
+
+- Minimum Sdk = 24
+- Version = 1.0.1
+- App Size = 8MB
 
 1. Release:
    - Click the release
