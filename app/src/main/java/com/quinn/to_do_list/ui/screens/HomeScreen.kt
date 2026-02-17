@@ -160,7 +160,6 @@ fun AddTaskBar(
     homeViewModel: HomeViewModel,
     modifier: Modifier = Modifier
 ) {
-    var taskName by remember { mutableStateOf("") }
 
     Surface(
         shape = RoundedCornerShape(100.dp),
@@ -175,7 +174,7 @@ fun AddTaskBar(
         ) {
             TextField(
                 modifier = modifier.weight(7f),
-                value = taskName,
+                value = homeViewModel.taskName,
                 placeholder = {
                     Text(
                         text = stringResource(R.string.add_your_task_label_textField),
@@ -183,7 +182,7 @@ fun AddTaskBar(
                         style = MaterialTheme.typography.labelLarge
                 ) },
                 singleLine = true,
-                onValueChange = { taskName = it },
+                onValueChange = homeViewModel::onTextChange,
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
@@ -197,13 +196,7 @@ fun AddTaskBar(
             )
             Button(
                 modifier = modifier.weight(3f),
-                onClick = {
-                    if (taskName.isEmpty()) {
-                        taskName = "Untitled Task"
-                    }
-                    homeViewModel.addTask(taskName)
-                    taskName = ""
-                },
+                onClick = { homeViewModel.addTask() },
                 colors = buttonColors(
                     contentColor = Color(0xFF845EC2),
                     containerColor = Color(0xFF845EC2),
