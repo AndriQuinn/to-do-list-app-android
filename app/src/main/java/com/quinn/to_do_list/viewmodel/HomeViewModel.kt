@@ -42,6 +42,7 @@ class HomeViewModel(
     }
 
     fun updateTask(task: Tasks) {
+        task.done = !task.done
         viewModelScope.launch {
             repository.updateTask(task)
         }

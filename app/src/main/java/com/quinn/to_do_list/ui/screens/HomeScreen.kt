@@ -338,6 +338,7 @@ fun TaskTab(
             selected = isDone,
             onClick = {
                 homeViewModel.updateTask(task)
+                isDone = !isDone
             },
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color.Green,
