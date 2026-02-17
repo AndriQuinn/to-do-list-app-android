@@ -7,7 +7,7 @@ A very simple Android app to manage your daily tasks.
 - Simple and Clean UI
 - Add and Delete To - Do's
 - Mark To - Do's as Done
-- Uses Simple Json File As Storage
+- Room Integrated
 
 ## Installation ⬇️
 
