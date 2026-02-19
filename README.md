@@ -7,7 +7,7 @@ A very simple Android app to manage your daily tasks.
 - Simple and Clean UI
 - Add and Delete To - Do's
 - Mark To - Do's as Done
-- Room Integrated
+- Local Database 
 
 ## Installation ⬇️
 
@@ -15,7 +15,7 @@ Information:
 
 - Minimum Sdk = 24
 - Version = 1.0.1
-- App Size = 8MB
+- App Size = 6MB
 
 1. Release:
    - Click the release
