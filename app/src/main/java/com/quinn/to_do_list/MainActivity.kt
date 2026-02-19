@@ -12,7 +12,9 @@ import androidx.navigation.compose.rememberNavController
 import com.quinn.to_do_list.ui.screens.AttributionScreen
 import com.quinn.to_do_list.ui.screens.HomeScreen
 import com.quinn.to_do_list.ui.theme.ToDoListTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

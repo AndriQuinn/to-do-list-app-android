@@ -3,8 +3,9 @@ package com.quinn.to_do_list.data.repository
 import com.quinn.to_do_list.data.local.dao.TasksDao
 import com.quinn.to_do_list.data.local.entity.Tasks
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class TaskRepository(
+class TaskRepository @Inject constructor(
     private val dao: TasksDao
 ) {
     suspend fun addTask(taskName: String) = dao.insert(tasks =Tasks(taskName = taskName, done = false))
