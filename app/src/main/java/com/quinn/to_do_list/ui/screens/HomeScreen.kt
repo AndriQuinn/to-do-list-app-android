@@ -40,32 +40,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.quinn.to_do_list.MyApp
 import com.quinn.to_do_list.R
 import com.quinn.to_do_list.data.local.entity.Tasks
 import com.quinn.to_do_list.ui.components.ConfirmDialog
 import com.quinn.to_do_list.ui.components.GenericButton
 import com.quinn.to_do_list.ui.components.NavBar
 import com.quinn.to_do_list.viewmodel.HomeViewModel
-import com.quinn.to_do_list.viewmodel.HomeViewModelFactory
 import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val application = LocalContext.current.applicationContext as MyApp
-
-    val homeViewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelFactory(application.repository)
-    )
     val tasks by homeViewModel.tasks.collectAsState(initial = emptyList())
 
     Scaffold(
