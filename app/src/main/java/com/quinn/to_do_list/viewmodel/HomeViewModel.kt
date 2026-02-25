@@ -19,6 +19,7 @@ class HomeViewModel @Inject constructor(
 
     var taskName by  mutableStateOf("")
         private set
+
     val tasks: Flow<List<Tasks>> = repository.readAllTask()
 
 

@@ -91,13 +91,17 @@ fun HomeScreen(
                     )
                 )
                 AddTaskBar(
-                    homeViewModel = homeViewModel,
+                    addTask = homeViewModel::addTask,
+                    taskName = homeViewModel.taskName,
+                    onTextChange = homeViewModel::onTextChange
                 )
             }
         }
     ) { innerPadding ->
         HomeScreenBody(
-            homeViewModel = homeViewModel,
+            updateTask = homeViewModel::updateTask,
+            removeTask = homeViewModel::removeTask,
+            removeAllTasks = homeViewModel::removeAllTask,
             taskList = tasks,
             Modifier.padding(innerPadding))
     }
@@ -105,7 +109,9 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreenBody(
-    homeViewModel: HomeViewModel,
+    updateTask: (Tasks) -> Unit,
+    removeTask: (Tasks) -> Unit,
+    removeAllTasks: () -> Unit,
     taskList: List<Tasks>,
     modifier: Modifier = Modifier
 ) {
@@ -117,7 +123,9 @@ fun HomeScreenBody(
             .verticalScroll(rememberScrollState())
     ) {
         TaskSection(
-            homeViewModel = homeViewModel,
+            updateTask = updateTask,
+            removeTask = removeTask,
+            removeAllTasks = removeAllTasks,
             taskList = taskList,
         )
     }
@@ -150,7 +158,9 @@ fun AppNameBar(modifier: Modifier = Modifier) {
 
 @Composable
 fun AddTaskBar(
-    homeViewModel: HomeViewModel,
+    addTask: () -> Unit,
+    taskName: String,
+    onTextChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -167,7 +177,7 @@ fun AddTaskBar(
         ) {
             TextField(
                 modifier = modifier.weight(7f),
-                value = homeViewModel.taskName,
+                value = taskName,
                 placeholder = {
                     Text(
                         text = stringResource(R.string.add_your_task_label_textField),
@@ -175,7 +185,7 @@ fun AddTaskBar(
                         style = MaterialTheme.typography.labelLarge
                 ) },
                 singleLine = true,
-                onValueChange = homeViewModel::onTextChange,
+                onValueChange = onTextChange,
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.Black,
                     unfocusedTextColor = Color.Black,
@@ -189,7 +199,7 @@ fun AddTaskBar(
             )
             Button(
                 modifier = modifier.weight(3f),
-                onClick = { homeViewModel.addTask() },
+                onClick = addTask,
                 colors = buttonColors(
                     contentColor = Color(0xFF845EC2),
                     containerColor = Color(0xFF845EC2),
@@ -208,7 +218,9 @@ fun AddTaskBar(
 
 @Composable
 fun TaskSection(
-    homeViewModel: HomeViewModel,
+    updateTask: (Tasks) -> Unit,
+    removeTask: (Tasks) -> Unit,
+    removeAllTasks: () -> Unit,
     taskList: List<Tasks>,
 ) {
 
@@ -216,10 +228,10 @@ fun TaskSection(
 
     if (showDialog) {
         ConfirmDialog(
-            title = "Clear To - Dos?",
-            message = "Are you sure you want to clear your To - Dos?",
+            title = stringResource(R.string.clear_to_dos_title_dialog_box),
+            message = stringResource(R.string.are_you_sure_you_want_to_clear_your_to_dos_msg_dialog_box),
             onConfirm = {
-                homeViewModel.removeAllTask()
+                removeAllTasks()
                 showDialog = !showDialog
             },
             onCancel = { showDialog = !showDialog }
@@ -270,8 +282,9 @@ fun TaskSection(
             }
             taskList.forEachIndexed { index, task ->
                 TaskTab(
+                    updateTask = updateTask,
+                    removeTask = removeTask,
                     delay = (index * 50L),
-                    homeViewModel = homeViewModel,
                     task = task,
                     )
             }
@@ -298,11 +311,11 @@ fun TaskSection(
 
 @Composable
 fun TaskTab(
+    removeTask: (Tasks) -> Unit,
+    updateTask: (Tasks) -> Unit,
     delay: Long,
-    homeViewModel: HomeViewModel,
     task: Tasks,
 ) {
-    var isDone by remember { mutableStateOf(task.done)}
     var fadeIn by remember {mutableStateOf(false)}
     val offsetX by animateDpAsState(
         targetValue = if (fadeIn) 0.dp else -(500.dp),
@@ -328,11 +341,8 @@ fun TaskTab(
     ) {
         RadioButton(
             modifier = Modifier.weight(1.5f),
-            selected = isDone,
-            onClick = {
-                homeViewModel.updateTask(task)
-                isDone = !isDone
-            },
+            selected = task.done,
+            onClick = {updateTask(task)},
             colors = RadioButtonDefaults.colors(
                 selectedColor = Color.Green,
                 unselectedColor = Color.White
@@ -346,9 +356,7 @@ fun TaskTab(
         )
         Button(
             modifier = Modifier.weight(1.5f),
-            onClick = {
-                homeViewModel.removeTask(task)
-            },
+            onClick = { removeTask(task) },
             colors = buttonColors(
                 contentColor = Color.Transparent,
                 containerColor = Color.Transparent
