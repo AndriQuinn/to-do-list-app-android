@@ -26,4 +26,6 @@
     <string name="confirm_label_dialog">Confirm</string>
     <string name="cancel_label_dialog">Cancel</string>
     <string name="untitled_task_filler_txt">Untitled Task</string>
+    <string name="clear_to_dos_title_dialog_box">Clear To - Dos?</string>
+    <string name="are_you_sure_you_want_to_clear_your_to_dos_msg_dialog_box">Are you sure you want to clear your To - Dos?</string>
 </resources>
