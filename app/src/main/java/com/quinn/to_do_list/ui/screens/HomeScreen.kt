@@ -16,9 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Icon
@@ -120,7 +120,6 @@ fun HomeScreenBody(
             .background(Color(0xFFFFFAFA))
             .padding(horizontal = 15.dp)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         TaskSection(
             updateTask = updateTask,
@@ -238,73 +237,81 @@ fun TaskSection(
         )
     }
 
-    Column(
-        modifier = Modifier
-            .padding(vertical = 30.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (taskList.isNotEmpty()) {
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
+    if (taskList.isNotEmpty()) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .padding(top = 30.dp)
+                .fillMaxWidth()
+        ) {
+            Button (
+                onClick = {
+                    showDialog = !showDialog
+                },
+                colors = buttonColors(
+                    containerColor = Color(0xFFED4845),
+                    contentColor = Color(0xFFED4845),
+                )
             ) {
-                Button (
-                    onClick = {
-                        showDialog = !showDialog
-                    },
-                    colors = buttonColors(
-                        containerColor = Color(0xFFED4845),
-                        contentColor = Color(0xFFED4845),
-                    )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
 
-                    ) {
-                        Text(
-                            text = stringResource(R.string.clear_text_btn_label),
-                            color = Color.White,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                        Spacer(Modifier.width(5.dp))
-                        Icon (
-                            painter = painterResource(R.drawable.delete_icon),
-                            tint = Color.White,
-                            contentDescription = stringResource(R.string.delete_icon_txt_desc),
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                ) {
+                    Text(
+                        text = stringResource(R.string.clear_text_btn_label),
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    Icon (
+                        painter = painterResource(R.drawable.delete_icon),
+                        tint = Color.White,
+                        contentDescription = stringResource(R.string.delete_icon_txt_desc),
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
-            taskList.forEachIndexed { index, task ->
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            itemsIndexed(
+                items = taskList,
+                key = { index, item -> item.id }
+            ) { index, task ->
                 TaskTab(
                     updateTask = updateTask,
                     removeTask = removeTask,
                     delay = (index * 50L),
                     task = task,
-                    )
-            }
-        } else {
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.you_don_t_have_any_to_do_yet_homesc_txt),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Black
-                )
-                Spacer(Modifier.width(15.dp))
-                Image(
-                    painter = painterResource(R.drawable.confetti_icon),
-                    contentDescription = stringResource(R.string.confetti_icon_desc),
-                    modifier = Modifier.size(20.dp)
                 )
             }
+        }
+    } else {
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(vertical = 30.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(R.string.you_don_t_have_any_to_do_yet_homesc_txt),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black
+            )
+            Spacer(Modifier.width(15.dp))
+            Image(
+                painter = painterResource(R.drawable.confetti_icon),
+                contentDescription = stringResource(R.string.confetti_icon_desc),
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }

@@ -40,16 +40,14 @@ class HomeViewModel @Inject constructor(
     }
 
     fun removeTask(task: Tasks) {
-        task.done = !task.done
         viewModelScope.launch {
             repository.removeTask(task)
         }
     }
 
     fun updateTask(task: Tasks) {
-        task.done = !task.done
         viewModelScope.launch {
-            repository.updateTask(task)
+            repository.updateTask(task.copy(done = !task.done))
         }
     }
 
