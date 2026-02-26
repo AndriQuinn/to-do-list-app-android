@@ -14,11 +14,11 @@ A very simple Android app to manage your daily tasks.
 Information:
 
 - Minimum Sdk = 24
-- Version = 1.0.1
+- Version = 1.0.2
 - App Size = 6MB
 
 1. Release:
-   - Click the release
+   - Click the [Releases](https://github.com/AndriQuinn/to-do-list-app-android/releases/tag/v1.0.2)
    - Download the apk
    - Done! 🥳
 
